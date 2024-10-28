@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const wellCome_1 = __importDefault(require("./wellCome"));
+const employeeRoutes_1 = __importDefault(require("./employeeRoutes"));
+const labRoutes_1 = __importDefault(require("./labRoutes"));
+const loginRoute_1 = __importDefault(require("./loginRoute"));
+const authRoutes_1 = __importDefault(require("./authRoutes"));
+const doctorRoutes_1 = __importDefault(require("./doctorRoutes"));
+const patientRoutes_1 = __importDefault(require("./patientRoutes"));
+const MedicalAgreementRoutes_1 = __importDefault(require("./MedicalAgreementRoutes"));
+const Exam_ModelRoutes_1 = __importDefault(require("./Exam_ModelRoutes"));
+const Agreement_ExamRoutes_1 = __importDefault(require("./Agreement_ExamRoutes"));
+const reportRoutes_1 = __importDefault(require("./reportRoutes"));
+const app = (0, express_1.default)();
+app.use(wellCome_1.default, loginRoute_1.default, authRoutes_1.default, employeeRoutes_1.default, labRoutes_1.default, doctorRoutes_1.default, patientRoutes_1.default, MedicalAgreementRoutes_1.default, Exam_ModelRoutes_1.default, Agreement_ExamRoutes_1.default, reportRoutes_1.default);
+exports.default = app;

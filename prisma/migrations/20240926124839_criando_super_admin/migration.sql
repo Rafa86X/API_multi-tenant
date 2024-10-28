@@ -1,0 +1,2 @@
+INSERT INTO "ClientLaboratory" ("id", "fantazyName") VALUES (0, 'SuperAdmin');
+INSERT INTO "Employee" ("id_clientLaboratory", "id", "login", "password", "name", "role_id") VALUES (0, '0', 'Valdo_SuperAdm', '$2a$12$gF9q2847mvoVWExSa5o1weZTNwmbAuBsGuHT/DM6WXudmVAj8JIZK', 'Valdo', 0);

@@ -1,0 +1,219 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL_CLOUD")
+}
+
+model Report {
+  id_clientLaboratory          Int
+  id                           String  @id @default(uuid())
+  lab_fantazyName              String
+  lab_cnpj                     String
+  lab_numberCouncilLab         String
+  lab_state                    String
+  lab_cep                      String
+  lab_street                   String
+  lab_numberStreet             String
+  lab_neighborhood             String
+  lab_additionalInfo           String
+  rt_lab_name                  String
+  rt_lab_council               String
+  rt_lab_number_council        String
+  signatory_counsil            String
+  signatory_number_council     String
+  signatory_name               String
+  patient_name                 String
+  patient_dateBirth            String
+  patient_gender               String
+  medicalAgreement_cnpj        String?
+  medicalAgreement_fantazyName String?
+  doctor_requesting_name       String?
+  doctor_requesting_counsil    String?
+  doctor_requesting_numCounsil String?
+  exam_body                    String
+  exam_name                    String
+  exam_date                    String
+  report_date                  String
+  report_state                 String
+  price                        String
+  paid                         Boolean @default(false)
+  ative                        Boolean @default(true)
+
+  ClientLaboratory ClientLaboratory @relation(fields: [id_clientLaboratory], references: [id])
+
+  @@index([id_clientLaboratory])
+}
+
+model Employee {
+  id_clientLaboratory Int
+  id                  String  @id @default(uuid())
+  login               String  @unique
+  password            String
+  name                String
+  dateInative         String?
+  role_id             Int
+  counsil             String?
+  number_council      String?
+  medical_specialty   String?
+  signatory           String?
+  newPassWord         Boolean @default(true)
+  active              Boolean @default(true)
+
+  Role             Role             @relation(fields: [role_id], references: [id])
+  ClientLaboratory ClientLaboratory @relation(fields: [id_clientLaboratory], references: [id])
+
+  @@index([role_id])
+  @@index([id_clientLaboratory])
+}
+
+model Role {
+  id       Int        @id @default(sequence())
+  role     String
+  access   String
+  Employee Employee[]
+}
+
+model ClientLaboratory {
+  id                         Int     @id @default(sequence())
+  cnpj                       String? @unique
+  councilLab                 String?
+  numberCouncilLab           String?
+  fantazyName                String?
+  socialReason               String?
+  state                      String?
+  cep                        String?
+  street                     String?
+  number                     String?
+  neighborhood               String?
+  additionalInfo             String?
+  nameTechnicalManager       String?
+  council_Tec_Manager        String?
+  number_Council_Tec_Manager String?
+  nameFinancialManager       String?
+  email                      String?
+  phone                      String?
+  paymentBlock               Boolean @default(false)
+  adminBlock                 Boolean @default(false)
+  active                     Boolean @default(true)
+
+  Subscription               Subscription[]
+  Employee                   Employee[]
+  Doctor                     Doctor[]
+  Patient                    Patient[]
+  MedicalAgreement_ExamModel MedicalAgreement_ExamModel[]
+  MedicalAgreement           MedicalAgreement[]
+  Exam_Model                 Exam_Model[]
+  Report                     Report[]
+}
+
+model MedicalAgreement_ExamModel {
+  id_clientLaboratory Int
+  id_MedicalAgreement String
+  id_exam_model       String
+  id                  String @id @default(uuid())
+
+  ClientLaboratory ClientLaboratory @relation(fields: [id_clientLaboratory], references: [id])
+  MedicalAgreement MedicalAgreement @relation(fields: [id_MedicalAgreement], references: [id])
+  Exam_Model       Exam_Model       @relation(fields: [id_exam_model], references: [id])
+
+  @@unique([id_clientLaboratory, id_exam_model, id_MedicalAgreement])
+  @@index([id_clientLaboratory])
+  @@index([id_MedicalAgreement])
+  @@index([id_exam_model])
+}
+
+model Exam_Model {
+  id_clientLaboratory Int
+  id                  String  @id @default(uuid())
+  exam_code           String
+  name                String
+  deadline_days       String
+  price               String
+  exam_body           String
+  internet_delivery   Boolean @default(false)
+
+  ClientLaboratory           ClientLaboratory             @relation(fields: [id_clientLaboratory], references: [id])
+  MedicalAgreement_ExamModel MedicalAgreement_ExamModel[]
+}
+
+model MedicalAgreement {
+  id_clientLaboratory Int
+  id                  String  @id @default(uuid())
+  cnpj                String?
+  fantazyName         String?
+  socialReason        String?
+  state               String?
+  cep                 String?
+  street              String?
+  number              String?
+  neighborhood        String?
+  additionalInfo      String?
+  technicalManager    String?
+  financialManager    String?
+  email               String?
+  phone               String?
+
+  ClientLaboratory ClientLaboratory @relation(fields: [id_clientLaboratory], references: [id])
+
+  MedicalAgreement_ExamModel MedicalAgreement_ExamModel[]
+
+  Patient Patient[]
+
+  @@index([id_clientLaboratory])
+}
+
+model Doctor {
+  id_clientLaboratory Int
+  id                  String  @id @default(uuid())
+  name                String
+  typeDoctor          String
+  council             String
+  numberCouncil       String
+  active              Boolean @default(true)
+  dateInative         String?
+
+  ClientLaboratory ClientLaboratory @relation(fields: [id_clientLaboratory], references: [id])
+
+  @@index([id_clientLaboratory])
+}
+
+model Subscription {
+  id_clientLaboratory Int
+  id                  String @default(uuid())
+  date                String
+  paid                String
+  paymentType         String
+
+  ClientLaboratory ClientLaboratory @relation(fields: [id_clientLaboratory], references: [id])
+
+  @@id([id_clientLaboratory, date, id])
+  @@index([id_clientLaboratory])
+}
+
+model Patient {
+  id_clientLaboratory Int
+  id                  String  @id @default(uuid())
+  id_medicalAgreement String?
+  name                String
+  dateBirth           String
+  gender              String
+  cpf                 String?
+  email               String?
+  phone               String?
+  socialName          String?
+
+  ClientLaboratory ClientLaboratory  @relation(fields: [id_clientLaboratory], references: [id])
+  MedicalAgreement MedicalAgreement? @relation(fields: [id_medicalAgreement], references: [id])
+
+  @@index([id_clientLaboratory])
+  @@index([id_medicalAgreement])
+}
